@@ -1,16 +1,18 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:wedding_invitation/common_widgets/common_text.dart';
 import 'package:wedding_invitation/constants/color_constants.dart';
 import 'package:wedding_invitation/constants/icon_constants.dart';
 import 'package:wedding_invitation/constants/image_constants.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-import 'package:url_launcher/url_launcher.dart';
+import 'package:wedding_invitation/constants/utils.dart';
+import 'package:wedding_invitation/schedule_card_widget.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final double width = MediaQuery.of(context).size.width;
     return Scaffold(
       body: Container(
         width: MediaQuery.of(context).size.width,
@@ -30,7 +32,8 @@ class HomePage extends StatelessWidget {
                     const Positioned(
                       left: 0,
                       right: 0,
-                      top: 10,
+                      bottom: 160,
+                      // top: 10,
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
@@ -46,10 +49,10 @@ class HomePage extends StatelessWidget {
               const SizedBox(height: 16),
               Image.asset(
                 ImageConstants.couple,
-                width: MediaQuery.of(context).size.width / 2.5,
+                width: width <= 750 ? width / 1.5 : width / 2.5,
               ),
               const SizedBox(height: 16),
-              const HeaderText(text: 'NOVEMBER 17, 2024'),
+              const HeaderText(text: '17 NOVEMBER, 2024'),
               const SizedBox(height: 8),
               const HeaderText(
                   text: 'VISNAGAR, GUJARAT',
@@ -61,37 +64,42 @@ class HomePage extends StatelessWidget {
                 fontWeight: FontWeight.bold,
                 fontSize: 20,
               ),
-              const SizedBox(height: 16),
-              const Divider(color: ColorConstants.dividerColor),
               const SizedBox(height: 24),
-              const HeaderText(text: 'SCHEDULE'),
-              const SizedBox(height: 24),
-              const SubTitleText(
-                text: '16 November 2024',
-                fontWeight: FontWeight.bold,
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  SvgPicture.asset(IconConstants.flowerIcon1, width: 70),
+                  const SizedBox(width: 16),
+                  const HeaderText(text: 'SCHEDULE'),
+                  const SizedBox(width: 16),
+                  SvgPicture.asset(IconConstants.flowerIcon2, width: 70),
+                ],
               ),
               const SizedBox(height: 24),
-              Wrap(
+              titleDividerWidget(context, title: '16 November 2024'),
+              const SizedBox(height: 24),
+              const Wrap(
                 crossAxisAlignment: WrapCrossAlignment.center,
+                alignment: WrapAlignment.center,
                 spacing: 80,
                 runSpacing: 24,
                 children: [
-                  scheduleSection(
+                  ScheduleCardWidget(
                       image: ImageConstants.mameru,
                       functionName: 'MAMERU',
                       date: '16 November 2024',
                       time: '10:00 AM'),
-                  scheduleSection(
+                  ScheduleCardWidget(
                       image: ImageConstants.lunch,
                       functionName: 'LUNCH',
                       date: '16 November 2024',
                       time: '11:00 AM'),
-                  scheduleSection(
+                  ScheduleCardWidget(
                       image: ImageConstants.haldi,
                       functionName: 'HALDI FUNCTION',
                       date: '16 November 2024',
                       time: '04:00 PM'),
-                  scheduleSection(
+                  ScheduleCardWidget(
                       image: ImageConstants.garba,
                       functionName: 'GARBA',
                       date: '16 November 2024',
@@ -107,18 +115,12 @@ class HomePage extends StatelessWidget {
               const SizedBox(height: 8),
               directionButton(
                 redirection: () {
-                  _launchMaps(lat: 23.691993, long: 72.542521);
-                }
-              ),
-              const SizedBox(height: 16),
-              const Divider(color: ColorConstants.dividerColor),
-              const SizedBox(height: 16),
-              const SubTitleText(
-                text: '17 November 2024',
-                fontWeight: FontWeight.bold,
-              ),
+                Utils.navigateToDestination(lat: 23.691993, long: 72.542521);
+              }),
               const SizedBox(height: 24),
-              scheduleSection(
+              titleDividerWidget(context, title: '17 November 2024'),
+              const SizedBox(height: 24),
+              const ScheduleCardWidget(
                   image: ImageConstants.weddingCouple,
                   functionName: 'WEDDING CEREMONY',
                   date: '17 November 2024',
@@ -132,64 +134,102 @@ class HomePage extends StatelessWidget {
               const SizedBox(height: 8),
               directionButton(
                 redirection: () {
-                  _launchMaps(lat: 23.8847074, long: 72.6227296);
-                }
-              ),
+                Utils.navigateToDestination(lat: 23.8847074, long: 72.6227296);
+              }),
               const SizedBox(height: 24),
               Container(
                 decoration:
                 BoxDecoration(border: Border.all(color: Colors.black)),
-                width: MediaQuery.of(context).size.width / 2,
+                width: width < 1100 ? width / 1.5 : width / 2,
                 padding:
                 const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-                child: Row(
-                  children: [
-                    const Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                child: width <= 750
+                    ? Column(
                         children: [
-                          SubTitleText(
-                            text: "Jay\'s Wedding",
-                            fontWeight: FontWeight.bold,
-                            fontSize: 20,
+                          weddingTimeAndAddress(
+                              alignment: CrossAxisAlignment.center),
+                          const SizedBox(height: 16),
+                          scheduleReminderButton(),
+                        ],
+                      )
+                    : Row(
+                        children: [
+                          Expanded(
+                            child: weddingTimeAndAddress(
+                                alignment: CrossAxisAlignment.start),
                           ),
-                          SubTitleText(
-                            text:
-                            "Sunday November 17, 2024 | 11:00 AM - 06:00 PM",
-                            fontWeight: FontWeight.bold,
-                            fontSize: 14,
-                          ),
-                          SubTitleText(
-                            text: "Mahakali Society, Kheralu",
-                            fontWeight: FontWeight.bold,
-                            fontSize: 14,
-                          ),
+                          scheduleReminderButton(),
                         ],
                       ),
-                    ),
-                    ElevatedButton(
-                      onPressed: () {
-                        scheduleEvent(weddingDate: '2024-11-16T00:00:00');
-                      },
-                      style: ElevatedButton.styleFrom(
-                          shape: const RoundedRectangleBorder(
-                            borderRadius: BorderRadius.zero,
-                          ),
-                          backgroundColor: Colors.black),
-                      child: const SubTitleText(
-                        text: 'SCHEDULE REMINDER',
-                        fontColor: Colors.white,
-                        fontSize: 14,
-                      ),
-                    )
-                  ],
-                ),
               ),
               const SizedBox(height: 16),
             ],
           ),
         ),
       ),
+    );
+  }
+
+  Widget titleDividerWidget(BuildContext context, {required String title}) {
+    return SizedBox(
+      width: MediaQuery.of(context).size.width / 1.1,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          const Expanded(child: Divider(color: ColorConstants.dividerColor)),
+          const SizedBox(width: 16),
+          SubTitleText(
+            text: title,
+            fontWeight: FontWeight.bold,
+          ),
+          const SizedBox(width: 16),
+          const Expanded(child: Divider(color: ColorConstants.dividerColor)),
+        ],
+      ),
+    );
+  }
+
+  Widget scheduleReminderButton() {
+    return ElevatedButton(
+      onPressed: () {
+        Utils.scheduleEventOnCalender(weddingDate: '2024-11-16T00:00:00');
+      },
+      style: ElevatedButton.styleFrom(
+          shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.zero,
+          ),
+          backgroundColor: Colors.black),
+      child: const SubTitleText(
+        text: 'SCHEDULE REMINDER',
+        fontColor: Colors.white,
+        fontSize: 14,
+      ),
+    );
+  }
+
+  Widget weddingTimeAndAddress(
+      {CrossAxisAlignment alignment = CrossAxisAlignment.center}) {
+    return Column(
+      crossAxisAlignment: alignment,
+      children: const [
+        SubTitleText(
+          text: "Jay's Wedding",
+          fontWeight: FontWeight.bold,
+          fontSize: 20,
+        ),
+        SizedBox(height: 8),
+        SubTitleText(
+          text: "Sunday November 17, 2024 | 11:00 AM - 06:00 PM",
+          fontWeight: FontWeight.bold,
+          fontSize: 14,
+        ),
+        SizedBox(height: 8),
+        SubTitleText(
+          text: "Mahakali Society, Kheralu",
+          fontWeight: FontWeight.bold,
+          fontSize: 14,
+        ),
+      ],
     );
   }
 
@@ -207,54 +247,5 @@ class HomePage extends StatelessWidget {
         fontSize: 18,
       ),
     );
-  }
-
-  Widget scheduleSection(
-      {required String image,
-        required String functionName,
-        required String date,
-        required String time}) {
-    return Column(
-      children: [
-        Image.asset(
-          image,
-          width: 250,
-          height: 250,
-        ),
-        HeaderText(
-          text: functionName,
-          fontWeight: FontWeight.normal,
-        ),
-        const SizedBox(height: 8),
-        SubTitleText(
-          text: 'Time: $time',
-          fontWeight: FontWeight.bold,
-          fontSize: 18,
-        ),
-      ],
-    );
-  }
-
-  void scheduleEvent({required String weddingDate}) {
-    final reminderDate =
-    DateTime.parse(weddingDate).subtract(const Duration(days: 1));
-    final url = Uri.encodeFull(
-        'https://www.google.com/calendar/render?action=TEMPLATE'
-            '&text=Jay & Rashmi wedding reminder'
-            '&dates=${reminderDate.toIso8601String().replaceAll('-', '').replaceAll(':', '')}/$weddingDate'
-            '&details=Don\'t forget the wedding!');
-
-    launchUrl(Uri.parse(url));
-  }
-
-  void _launchMaps({required double lat, required double long}) async {
-    final url = Uri.parse(
-        'https://www.google.com/maps/dir/?api=1&destination=$lat,$long&travelmode=driving'
-    );
-    if (await canLaunchUrl(url)) {
-      await launchUrl(url);
-    } else {
-      throw 'Could not launch $url';
-    }
   }
 }
