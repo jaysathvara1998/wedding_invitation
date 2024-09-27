@@ -105,7 +105,11 @@ class HomePage extends StatelessWidget {
                 fontSize: 18,
               ),
               const SizedBox(height: 8),
-              directionButton(),
+              directionButton(
+                redirection: () {
+                  _launchMaps(lat: 23.691993, long: 72.542521);
+                }
+              ),
               const SizedBox(height: 16),
               const Divider(color: ColorConstants.dividerColor),
               const SizedBox(height: 16),
@@ -126,7 +130,11 @@ class HomePage extends StatelessWidget {
                 fontSize: 18,
               ),
               const SizedBox(height: 8),
-              directionButton(),
+              directionButton(
+                redirection: () {
+                  _launchMaps(lat: 23.8847074, long: 72.6227296);
+                }
+              ),
               const SizedBox(height: 24),
               Container(
                 decoration:
@@ -185,9 +193,9 @@ class HomePage extends StatelessWidget {
     );
   }
 
-  Widget directionButton() {
+  Widget directionButton({required Function() redirection}) {
     return ElevatedButton(
-      onPressed: () {},
+      onPressed: redirection,
       style: ElevatedButton.styleFrom(
           shape: const RoundedRectangleBorder(
             borderRadius: BorderRadius.zero,
@@ -237,5 +245,16 @@ class HomePage extends StatelessWidget {
             '&details=Don\'t forget the wedding!');
 
     launchUrl(Uri.parse(url));
+  }
+
+  void _launchMaps({required double lat, required double long}) async {
+    final url = Uri.parse(
+        'https://www.google.com/maps/dir/?api=1&destination=$lat,$long&travelmode=driving'
+    );
+    if (await canLaunchUrl(url)) {
+      await launchUrl(url);
+    } else {
+      throw 'Could not launch $url';
+    }
   }
 }
