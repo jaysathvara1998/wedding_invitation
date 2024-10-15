@@ -6,7 +6,7 @@ class Utils {
         DateTime.parse(weddingDate).subtract(const Duration(days: 1));
     final url = Uri.encodeFull(
         'https://www.google.com/calendar/render?action=TEMPLATE'
-        '&text=Jay & Rashmi wedding reminder'
+        '&text=Jay and Rashmi\'s wedding'
         '&dates=${reminderDate.toIso8601String().replaceAll('-', '').replaceAll(':', '')}/$weddingDate'
         '&details=Don\'t forget the wedding!');
 
