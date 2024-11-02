@@ -20,6 +20,11 @@ class _HomePageState extends State<HomePage> {
   DateTime eventDate = DateTime(2024, 11, 17, 12, 0); // Wedding date
   Duration remainingTime = const Duration();
   Timer? timer;
+  List<String> images = [
+    ImageConstants.couple1,
+    ImageConstants.couple2,
+    ImageConstants.couple3,
+  ];
 
   @override
   void initState() {
@@ -65,17 +70,16 @@ class _HomePageState extends State<HomePage> {
     final double width = MediaQuery.of(context).size.width;
 
     return Scaffold(
-      body: Container(
+      body: SizedBox(
         width: MediaQuery.of(context).size.width,
-        // padding: const EdgeInsets.all(24),
         child: ListView(
           children: [
-            SizedBox(height: 24),
-            headerSection(width), // Build the header section dynamically
+            const SizedBox(height: 24),
+            headerSection(width),
             scheduleSection(context),
             weddingSection(context),
             reminderSection(context, width),
-            SizedBox(height: 24),
+            const SizedBox(height: 24),
           ],
         ),
       ),
@@ -112,10 +116,15 @@ class _HomePageState extends State<HomePage> {
           ),
         ),
         const SizedBox(height: 16),
-        Image.asset(
-          ImageConstants.couple,
-          width: width <= 750 ? width / 1.5 : width / 2.5,
-        ),
+        GridView.builder(
+            shrinkWrap: true,
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 3, childAspectRatio: 16 / 9),
+            itemBuilder: (context, index) {
+              final image = images[index];
+              return Image.asset(image);
+            },
+            itemCount: images.length),
         const SizedBox(height: 16),
         HeaderText(text: formatDuration(remainingTime)),
         const SizedBox(height: 8),
