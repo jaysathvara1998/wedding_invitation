@@ -45,9 +45,12 @@ class _HomePageState extends State<HomePage> {
   // Update the remaining time
   void updateRemainingTime() {
     final now = DateTime.now();
+    if (eventDate.isBefore(now)) {
+      timer?.cancel();
+      return;
+    }
     setState(() {
-      remainingTime =
-          eventDate.difference(now);
+      remainingTime = eventDate.difference(now);
     });
   }
 
@@ -61,6 +64,9 @@ class _HomePageState extends State<HomePage> {
     if (days > 1) {
       return "$days days to go";
     } else {
+      if (int.parse(hours) < 0) {
+        return 'Marriage completed';
+      }
       return "$hours:$minutes:$seconds";
     }
   }
